@@ -77,6 +77,35 @@ public sealed class CosmosDbStorage : JobStorage
         Client = cosmosClient;
     }
 
+    /// <summary>
+    /// Enabled Hangfire features.
+    /// </summary>
+    public ReadOnlyDictionary<string, bool> Features { get; set; } = new ReadOnlyDictionary<string, bool>(
+        new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase)
+        {
+            {JobStorageFeatures.ExtendedApi, true},
+            {JobStorageFeatures.JobQueueProperty, true},
+            {JobStorageFeatures.Connection.BatchedGetFirstByLowest, true},
+            {JobStorageFeatures.Connection.GetUtcDateTime, false},
+            {JobStorageFeatures.Connection.GetSetContains, true},
+            {JobStorageFeatures.Connection.LimitedGetSetCount, true},
+            {JobStorageFeatures.Transaction.AcquireDistributedLock, true},
+            {JobStorageFeatures.Transaction.CreateJob, true},
+            {JobStorageFeatures.Transaction.SetJobParameter, true},
+            {JobStorageFeatures.Monitoring.DeletedStateGraphs, true},
+            {JobStorageFeatures.Monitoring.AwaitingJobs, true},
+        });
+
+    public override bool HasFeature(string featureId)
+    {
+        if (featureId == null)
+            throw new ArgumentNullException(nameof(featureId));
+
+        return Features.TryGetValue(featureId, out bool isSupported)
+            ? isSupported
+            : base.HasFeature(featureId);
+    }
+
     private CosmosDbStorage(string databaseName, string containerName, CosmosDbStorageOptions? storageOptions = null)
     {
         if (string.IsNullOrEmpty(databaseName))
