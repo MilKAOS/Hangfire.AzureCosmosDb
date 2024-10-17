@@ -24,10 +24,10 @@ public class ContainerFixture : IDisposable
 			.Build();
 
 		IConfigurationSection section = configuration.GetSection("CosmosDB");
-		string url = section.GetValue<string>("Url");
-		string secret = section.GetValue<string>("Secret");
-		string database = section.GetValue<string>("Database");
-		string container = section.GetValue<string>("Container");
+		string url = section.GetValue<string>("Url") ?? string.Empty;
+		string secret = section.GetValue<string>("Secret") ?? string.Empty;
+		string database = section.GetValue<string>("Database") ?? string.Empty;
+		string container = section.GetValue<string>("Container") ?? string.Empty;
 
 		CosmosDbStorageOptions option = new()
 		{
@@ -54,7 +54,8 @@ public class ContainerFixture : IDisposable
 
 	public void Dispose()
 	{
-		if (disposed) return;
+        if (disposed)
+            return;
 		disposed = true;
 
 		Clean();
@@ -64,10 +65,7 @@ public class ContainerFixture : IDisposable
 	{
 		private readonly ITestOutputHelper testOutputHelper;
 
-		public TestLogger(ITestOutputHelper testOutputHelper)
-		{
-			this.testOutputHelper = testOutputHelper;
-		}
+		public TestLogger(ITestOutputHelper testOutputHelper) => this.testOutputHelper = testOutputHelper;
 
 		public ILog GetLogger(string name) => new TestLog(testOutputHelper);
 	}
@@ -76,14 +74,12 @@ public class ContainerFixture : IDisposable
 	{
 		private readonly ITestOutputHelper? testOutputHelper;
 
-		public TestLog(ITestOutputHelper testOutputHelper)
-		{
-			this.testOutputHelper = testOutputHelper;
-		}
+        public TestLog(ITestOutputHelper testOutputHelper) => this.testOutputHelper = testOutputHelper;
 
-		public bool Log(LogLevel logLevel, Func<string>? messageFunc, Exception? exception = null)
+        public bool Log(LogLevel logLevel, Func<string>? messageFunc, Exception? exception = null)
 		{
-			if (messageFunc != null && testOutputHelper != null) testOutputHelper.WriteLine("[{0:O}] - [{1}] - {2} {3}", DateTime.UtcNow, logLevel, messageFunc(), exception?.Message);
+            if (messageFunc != null && testOutputHelper != null)
+                testOutputHelper.WriteLine("[{0:O}] - [{1}] - {2} {3}", DateTime.UtcNow, logLevel, messageFunc(), exception?.Message);
 			return true;
 		}
 	}

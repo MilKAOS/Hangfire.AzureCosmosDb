@@ -196,7 +196,6 @@ public class CosmosDbConnectionFacts : IClassFixture<ContainerFixture>
 		Assert.Null(job);
 	}
 
-
 	[Fact]
 	public void GetJobData_ReturnsNull_WhenThereIsNoSuchJob()
 	{
@@ -1214,8 +1213,8 @@ public class CosmosDbConnectionFacts : IClassFixture<ContainerFixture>
 			distributedLock.Dispose();
 		});
 
-		// lets set the range
-		Task.Run(() => { connection.SetRangeInHash("some-hash", new Dictionary<string, string?> { { "key1", "VALUE-1" } }); }).Wait();
+        // lets set the range
+        Task.Run(() => connection.SetRangeInHash("some-hash", new Dictionary<string, string?> { { "key1", "VALUE-1" } })).Wait();
 
 		//assert
 		QueryRequestOptions queryRequestOptions = new() { PartitionKey = PartitionKeys.Hash };
@@ -1939,7 +1938,6 @@ public class CosmosDbConnectionFacts : IClassFixture<ContainerFixture>
 		Assert.NotNull(@lock);
 		@lock.Dispose();
 	}
-
 
 #pragma warning disable xUnit1013
 	// ReSharper disable once MemberCanBePrivate.Global

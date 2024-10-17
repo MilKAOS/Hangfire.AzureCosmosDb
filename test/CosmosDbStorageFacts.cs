@@ -24,10 +24,10 @@ public class CosmosDbStorageFacts
 			.Build();
 
 		IConfigurationSection section = configuration.GetSection("CosmosDB");
-		url = section.GetValue<string>("Url");
-		secret = section.GetValue<string>("Secret");
-		database = section.GetValue<string>("Database");
-		container = section.GetValue<string>("Container");
+		url = section.GetValue<string>("Url") ?? string.Empty;
+		secret = section.GetValue<string>("Secret") ?? string.Empty;
+		database = section.GetValue<string>("Database") ?? string.Empty;
+		container = section.GetValue<string>("Container") ?? string.Empty;
 	}
 
 	[Fact]
@@ -117,7 +117,7 @@ public class CosmosDbStorageFacts
 
 	private CosmosDbStorage CreateSutWithCosmosClient()
 	{
-		var cosmosClient = new CosmosClient(url, secret);
+        var cosmosClient = new CosmosClient(url, secret);
 		return  new(cosmosClient, database, container);
 	}
 }
